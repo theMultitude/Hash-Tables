@@ -46,35 +46,46 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Fill this in.
         '''
-        pass
+        if abs(len([item for item in self.storage if item]) - self.capacity) < 1:
+            self.resize()
 
+        index = self._hash_mod(key)
+
+        if not self.storage[index]:
+            self.storage[index] = LinkedPair(key, value)
+        else:
+            self.storage[index].next = LinkedPair(key, value)
+            print('Index Collision!')
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if not self.storage[index]: #no key found
+            print('key not found')
+        else:
+            self.storage[self._hash_mod(key)] = None #replace value with None
 
 
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Fill this in.
         '''
-        pass
+        key_val = self.storage[self._hash_mod(key)]
+        if key_val:
+            return key_val.value
+        else:
+            return None
+
 
 
     def resize(self):
@@ -84,7 +95,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity #new storage capacity to be filled
+
+        for key_val in [item for item in self.storage if item]:
+            new_index = self._hash_mod(key_val.key)
+            new_storage[new_index] = key_val
 
 
 
